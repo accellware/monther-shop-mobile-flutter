@@ -1,29 +1,45 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import '../model/product_model.dart';
 
 enum SortType { name, priceLowToHigh, priceHighToLow }
 
 class ProductsProvider extends ChangeNotifier {
-  final List<Product> _allProducts = [
-    Product(
-      id: 'p1',
-      name: 'Men T-Shirt',
-      price: 29.99,
-      description: 'A comfortable men\'s t-shirt.',
-      category: 'Men',
-    ),
-    Product(
-      id: 'p2',
-      name: 'Women T-Shirt',
-      price: 49.99,
-      description: 'A stylish women\'s t-shirt.',
-      category: 'Women',
-    ),
-  ];
+  List<Product> _allProducts = [];
 
   String _selectedCategory = 'All';
   String get selectedCategory => _selectedCategory;
   SortType _sortType = SortType.name;
+
+  ProductsProvider() {
+    fetchProducts();
+  }
+
+  Future<void> fetchProducts() async {
+    try {
+      final snapshot =
+          await FirebaseFirestore.instance.collection('products').get();
+
+      _allProducts =
+          snapshot.docs.map((doc) {
+            final data = doc.data();
+            return Product(
+              id: doc.id,
+              name: data['name']?.toString() ?? 'Unknown',
+              category: data['category']?.toString() ?? 'Unknown',
+              price: (data['price'] as num?)?.toDouble() ?? 0.0,
+              description: data['description']?.toString() ?? 'No description',
+            );
+          }).toList();
+
+      notifyListeners();
+    } catch (e) {
+      // Silently fail
+      if (kDebugMode) {
+        print('Error fetching products: $e');
+      }
+    }
+  }
 
   List<Product> get products {
     List<Product> filtered = [..._allProducts];

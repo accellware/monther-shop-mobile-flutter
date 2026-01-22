@@ -13,7 +13,7 @@ import 'package:monther_shop_mobile_flutter/main.dart';
 void main() {
   testWidgets('App renders correctly', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const MotherShopApp());
+    await tester.pumpWidget(const ShopApp());
 
     // Verify that the app title is displayed.
     expect(find.text('Mother Shop'), findsWidgets);

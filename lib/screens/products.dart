@@ -7,109 +7,55 @@ class ProductsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget buildCategoryChip(BuildContext context, String category) {
-      final provider = context.watch<ProductsProvider>();
-      final isSelected = provider.selectedCategory == category;
-
-      return ChoiceChip(
-        label: Text(category),
-        selected: isSelected,
-        onSelected: (_) {
-          provider.setCategory(category);
-        },
-      );
-    }
-
     return Scaffold(
-      appBar: AppBar(title: Text('Products')),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Wrap(
-              spacing: 8,
-              children: [
-                buildCategoryChip(context, 'All'),
-                buildCategoryChip(context, 'Men'),
-                buildCategoryChip(context, 'Women'),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Wrap(
-              spacing: 8,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    context.read<ProductsProvider>().setSortType(SortType.name);
-                  },
-                  child: const Text('Sort by Name'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    context.read<ProductsProvider>().setSortType(
-                      SortType.priceLowToHigh,
-                    );
-                  },
-                  child: const Text('Price: Low to High'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    context.read<ProductsProvider>().setSortType(
-                      SortType.priceHighToLow,
-                    );
-                  },
-                  child: const Text('Price: High to Low'),
-                ),
-              ],
-            ),
-          ),
+      appBar: AppBar(title: const Text('Products')),
+      body: Consumer<ProductsProvider>(
+        builder: (context, provider, child) {
+          final products = provider.products;
 
-          Expanded(
-            child: Consumer<ProductsProvider>(
-              builder: (context, provider, child) {
-                final products = provider.products;
+          if (products.isEmpty) {
+            return const Center(
+              child: Text('No products available'),
+            );
+          }
 
-                return ListView.builder(
-                  itemCount: products.length,
-                  itemBuilder: (ctx, i) {
-                    final product = products[i];
-                    return Card(
-                      elevation: 2,
-                      margin: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 5,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          children: [
-                            Text(product.name),
-                            const SizedBox(height: 8),
-                            Text(product.description),
-                            const SizedBox(height: 8),
-                            Text(product.category),
-                            const SizedBox(height: 8),
-                            Text(product.price.toStringAsFixed(2)),
-                            const SizedBox(height: 8),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: ElevatedButton(
-                                onPressed: () {},
-                                child: const Text('Add To Cart'),
-                              ),
-                            ),
-                          ],
+          return ListView.builder(
+            itemCount: products.length,
+            itemBuilder: (context, index) {
+              final product = products[index];
+              return Card(
+                elevation: 2,
+                margin: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 5,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(product.name, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 8),
+                      Text(product.description),
+                      const SizedBox(height: 8),
+                      Text(product.category, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                      const SizedBox(height: 8),
+                      Text('\$${product.price.toStringAsFixed(2)}', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 8),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: ElevatedButton(
+                          onPressed: () {},
+                          child: const Text('Add To Cart'),
                         ),
                       ),
-                    );
-                  },
-                );
-              },
-            ),
-          ),
-        ],
+                    ],
+                  ),
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }
