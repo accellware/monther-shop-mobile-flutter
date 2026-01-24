@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'pages/products_page.dart';
-import 'providers/product_provider.dart';
+import 'package:monther_shop_mobile_flutter/screens/products.dart';
+import 'provider/products_provider.dart';
 
 void main() {
   runApp(const MotherShopApp());
@@ -14,7 +14,7 @@ class MotherShopApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => ProductProvider()),
+        ChangeNotifierProvider(create: (_) => ProductsProvider()),
       ],
       child: MaterialApp(
         title: 'Shop',
@@ -39,33 +39,21 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Shop'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('Shop'), centerTitle: true),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              'Welcome to Shop',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton.icon(
+            ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const ProductsPage(),
+                    builder: (context) => ProductsScreen(),
                   ),
                 );
               },
-              icon: const Icon(Icons.shopping_bag),
-              label: const Text('Browse Products'),
+              child: const Text('View Products'),
             ),
           ],
         ),
