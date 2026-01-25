@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:monther_shop_mobile_flutter/provider/cart_provider.dart';
+import 'package:monther_shop_mobile_flutter/screens/cart.dart';
 import 'package:provider/provider.dart';
 import 'package:monther_shop_mobile_flutter/screens/products.dart';
 import 'provider/products_provider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MotherShopApp());
 }
 
@@ -15,6 +21,7 @@ class MotherShopApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ProductsProvider()),
+        ChangeNotifierProvider(create: (_) => CartProvider()),
       ],
       child: MaterialApp(
         title: 'Shop',
@@ -49,11 +56,20 @@ class HomePage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ProductsScreen(),
+                    builder: (context) => const ProductsScreen(),
                   ),
                 );
               },
               child: const Text('View Products'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const CartScreen()),
+                );
+              },
+              child: const Text('View Cart'),
             ),
           ],
         ),
