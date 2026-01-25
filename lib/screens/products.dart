@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../provider/products_provider.dart';
+import '../provider/cart_provider.dart';
 
 class ProductsScreen extends StatelessWidget {
   const ProductsScreen({super.key});
@@ -96,7 +97,23 @@ class ProductsScreen extends StatelessWidget {
                             Align(
                               alignment: Alignment.centerRight,
                               child: ElevatedButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  final cartProvider =
+                                      context.read<CartProvider>();
+                                  cartProvider.addToCart(
+                                    productId: product.id,
+                                    name: product.name,
+                                    price: product.price,
+                                  );
+
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        '${product.name} added to cart',
+                                      ),
+                                    ),
+                                  );
+                                },
                                 child: const Text('Add To Cart'),
                               ),
                             ),
